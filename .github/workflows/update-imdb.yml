@@ -1,0 +1,75 @@
+name: Process TSV Files
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight
+  push:
+    branches:
+      - master
+
+jobs:
+  process-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pandas
+
+      - name: Download and process files
+        run: |
+          python <<EOF
+          import requests
+          import pandas as pd
+          import gzip
+          import os
+          import json
+
+          # Download and extract files
+          urls = [
+              'https://datasets.imdbws.com/title.basics.tsv.gz',
+              'https://datasets.imdbws.com/title.ratings.tsv.gz',
+          ]
+
+          for url in urls:
+              response = requests.get(url)
+              filename = url.split('/')[-1].replace('.gz', '')
+              with open(filename + '.gz', 'wb') as f:
+                  f.write(response.content)
+              with gzip.open(filename + '.gz', 'rb') as f_in:
+                  with open(filename, 'wb') as f_out:
+                      f_out.write(f_in.read())
+
+          # Read TSV files into DataFrames
+          file1 = pd.read_csv('title.basics.tsv', sep='\t')
+          file2 = pd.read_csv('title.ratings.tsv', sep='\t')
+
+          # Merge DataFrames on ID
+          merged = pd.merge(title.basics, title.ratings, on='tconst', how='left')
+
+          # Create JSON files
+          for index, row in merged.iterrows():
+              data = row.dropna().to_dict()
+              with open(f'{data["tconst"]}.json', 'w') as f:
+                  json.dump(data, f, indent=2)
+
+          EOF
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Update JSON files"
+          git push origin gh-files
