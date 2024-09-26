@@ -1,0 +1,10 @@
+# Ignore by default
+*
+
+# Whitelist
+!.gitignore
+!README.md
+
+# API
+!imdb
+!imdb/**/*
