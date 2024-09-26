@@ -26,7 +26,7 @@ export interface ApiResponse<T> {
    */
   hasException: boolean;
   /**
-   * Request was purposly aborted.
+   * Request was purposely aborted.
    */
   isAborted: boolean;
   /**

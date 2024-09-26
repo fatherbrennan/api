@@ -1,4 +1,5 @@
 import { FileSystem } from '../api/file-system';
+
 import type { InferDataset, TypeAsString } from './types';
 
 export type DatasetFieldConfig = {
@@ -45,7 +46,7 @@ export const Data = {
       _type: 'string',
     },
     /**
-     * The type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc).
+     * The type/format of the title.
      */
     titleType: {
       col: 'titleType',
