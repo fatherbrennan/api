@@ -5,3 +5,7 @@
 ## Source
 
 - [IMDb Datasets](https://datasets.imdbws.com/)
+
+## License
+
+Use of this API is to align with information on [IMDb Dataset Usage](https://developer.imdb.com/non-commercial-datasets/) and [IMDb Conditions of Use](https://www.imdb.com/conditions).
