@@ -1,0 +1,26 @@
+{
+  "name": "api",
+  "private": true,
+  "description": "API by yours truly.",
+  "trustedDependencies-annotation": "Needed for bun to allow running install scripts",
+  "type": "module",
+  "eslintConfig": {
+    "parserOptions": {
+      "sourceType": "module"
+    }
+  },
+  "scripts": {
+    "test": "bun test --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.10",
+    "@types/eslint": "^8.56.10",
+    "@types/node": "^20.14.11",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-qwik": "^1.7.1",
+    "prettier": "^3.3.3",
+    "typescript": "5.4.5"
+  }
+}
