@@ -1,4 +1,5 @@
 import { apiImdbGet } from '../imdb';
+import { Branch } from './constants';
 import { UrlBuilder } from './url';
 
 import type { UrlBuilderQueryParams } from './url';
@@ -12,13 +13,16 @@ export interface ApiRequestProps {
 }
 
 export interface ApiResponse<T> {
+  /**
+   * Fetch controller.
+   */
   controller: AbortController;
   /**
    * The expected response on `isSuccess = true`.
    */
   data: T | null;
   /**
-   * Exception.
+   * Exception caught, if any.
    */
   exception: null | unknown;
   /**
@@ -57,7 +61,7 @@ export class ApiRequest {
 }
 
 export class Api {
-  public static async fetch<TDefaultResponse, TResponse = undefined>(request: ApiRequest) {
+  public static async fetch<TDefaultResponse, TResponse = undefined>(url: string, request: ApiRequestProps) {
     // Create controller to allow requests to be aborted
     const controller = new AbortController();
     // Initialize response object
@@ -71,7 +75,7 @@ export class Api {
     };
 
     try {
-      const r = await fetch(`${request.baseUrl}${UrlBuilder.query(request.params)}`, { signal: controller.signal, ...request.requestInit });
+      const r = await fetch(url, { signal: controller.signal, ...request.requestInit });
       const rType = (await r[request.responseType]()) as TResponse extends undefined ? TDefaultResponse : TResponse;
 
       // Build and return response object
@@ -90,16 +94,30 @@ export class Api {
     }
   }
 
+  public static prepareRequest<TDefaultResponse, TResponse = undefined>(request: ApiRequest) {
+    const url = `${request.baseUrl}${UrlBuilder.query(request.params)}`;
+
+    return {
+      url,
+      request,
+      fetch: async () => {
+        return this.fetch<TDefaultResponse, TResponse>(url, request);
+      },
+    };
+  }
+
+  // TODO: Update this.
   /**
    * @example
    * ```ts
-   * const { data, hasException, isAborted, isSuccess } = await Api.get()
-   *   .imdb()
-   *   .tv();
+   * // Return URL.
+   * const url = await Api.get().imdb().tv().search().url;
+   * // Return response object from HTTP request.
+   * const { data, hasException, isAborted, isSuccess } = await Api.get().imdb().tv().search().fetch();
    * ```
    */
   public static get<TResponse = undefined>() {
-    const request = new ApiRequest({ baseUrl: 'https://raw.githubusercontent.com/fatherbrennan/api', requestInit: { method: 'GET' } });
+    const request = new ApiRequest({ baseUrl: `https://raw.githubusercontent.com/fatherbrennan/api/refs/heads/${Branch.Default}`, requestInit: { method: 'GET' } });
 
     return {
       ...apiImdbGet<TResponse>(request),

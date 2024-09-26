@@ -1,5 +1,5 @@
 import { Api, ApiRequest } from '../api/api';
-import { Branch, MIME } from '../api/constants';
+import { MIME } from '../api/constants';
 import { imdbDir, imdbTvDir, imdbTvSearchFile } from './constants';
 
 import type { Data } from './constants';
@@ -17,7 +17,7 @@ export const apiImdbGet = <TResponse>(request: ApiRequest) => ({
   [imdbDir.dir]: () => {
     request = new ApiRequest(
       {
-        baseUrl: `/${imdbDir.dir}/${Branch.Default}`,
+        baseUrl: `/${imdbDir.dir}`,
         requestInit: {
           headers: { accept: MIME.JSON },
         },
@@ -31,16 +31,14 @@ export const apiImdbGet = <TResponse>(request: ApiRequest) => ({
 
         return {
           search: () => {
-            request = new ApiRequest({ baseUrl: imdbTvSearchFile.file }, request);
+            request = new ApiRequest({ baseUrl: `/${imdbTvSearchFile.file}` }, request);
 
-            return Api.fetch<ImdbTvSeriesDetails, TResponse>(request);
+            return Api.prepareRequest<ImdbTvSeriesDetails, TResponse>(request);
           },
           details: ({ id }: ImdbTvDetailsParams) => {
             request = new ApiRequest({ baseUrl: `/${id}.json` }, request);
 
-            console.log(request.baseUrl);
-
-            return Api.fetch<ImdbTvSeriesDetails, TResponse>(request);
+            return Api.prepareRequest<ImdbTvSeriesDetails, TResponse>(request);
           },
         };
       },
