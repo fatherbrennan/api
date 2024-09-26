@@ -1,4 +1,4 @@
-import { apiImdbGet } from '../imdb';
+import { apiImdbGet } from '../../imdb';
 import { Branch } from './constants';
 import { UrlBuilder } from './url';
 

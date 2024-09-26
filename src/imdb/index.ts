@@ -1,6 +1,6 @@
-import { Api, ApiRequest } from '../api/api';
-import { MIME } from '../api/constants';
-import { imdbDir, imdbTvDir, imdbTvSearchFile } from './constants';
+import { Api, ApiRequest } from '../api/common/api';
+import { MIME } from '../api/common/constants';
+import { imdbDirName, imdbTvDirName, imdbTvSearchFileName } from './constants';
 
 import type { Data } from './constants';
 import type { ImdbTitleBasics, ImdbTvSeriesDetails } from './types';
@@ -14,10 +14,10 @@ export type ImdbTvDetailsParams = {
 };
 
 export const apiImdbGet = <TResponse>(request: ApiRequest) => ({
-  [imdbDir.dir]: () => {
+  [imdbDirName]: () => {
     request = new ApiRequest(
       {
-        baseUrl: `/${imdbDir.dir}`,
+        baseUrl: `/${imdbDirName}`,
         requestInit: {
           headers: { accept: MIME.JSON },
         },
@@ -27,11 +27,11 @@ export const apiImdbGet = <TResponse>(request: ApiRequest) => ({
 
     return {
       tv: () => {
-        request = new ApiRequest({ baseUrl: `/${imdbTvDir.dir}` }, request);
+        request = new ApiRequest({ baseUrl: `/${imdbTvDirName}` }, request);
 
         return {
           search: () => {
-            request = new ApiRequest({ baseUrl: `/${imdbTvSearchFile.file}` }, request);
+            request = new ApiRequest({ baseUrl: `/${imdbTvSearchFileName}` }, request);
 
             return Api.prepareRequest<ImdbTvSeriesDetails, TResponse>(request);
           },

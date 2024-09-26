@@ -1,5 +1,3 @@
-import { FileSystem } from '../api/file-system';
-
 import type { InferDataset, TypeAsString } from './types';
 
 export type DatasetFieldConfig = {
@@ -11,11 +9,11 @@ export type DatasetFieldConfig = {
 
 export type DatasetConfig = Record<string, DatasetFieldConfig>;
 
-export const imdbDir = FileSystem.directory('imdb');
+export const imdbDirName = 'imdb';
 
-export const imdbTvDir = FileSystem.directory('tv', imdbDir);
+export const imdbTvDirName = 'tv';
 
-export const imdbTvSearchFile = FileSystem.file('search.json', imdbTvDir);
+export const imdbTvSearchFileName = 'search.json';
 
 const createDataset = <T extends DatasetConfig>(dataset: T) => {
   return dataset as unknown as InferDataset<T>;
