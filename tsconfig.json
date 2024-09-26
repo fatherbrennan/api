@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": false,
-    "target": "ES2017",
+    "target": "ES2015",
     "module": "ES2022",
     "lib": ["es2022"],
     "strict": true,
@@ -13,7 +13,8 @@
     "incremental": true,
     "isolatedModules": true,
     "outDir": "tmp",
-    "noEmit": true
+    "noEmit": true,
+    "tsBuildInfoFile": ".tsbuildinfo"
   },
   "files": ["./.eslintrc.json", "./prettier.config.mjs"],
   "include": ["./**/*.ts", "./**/*.tsx", "./*.d.ts", "./*.config.ts"]

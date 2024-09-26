@@ -13,4 +13,5 @@ node_modules
 **/*.log
 
 # Builds
+dist
 tmp

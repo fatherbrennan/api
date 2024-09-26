@@ -2,6 +2,8 @@
   "name": "api",
   "private": true,
   "description": "API by yours truly.",
+  "author": "fatherbrennan",
+  "license": "MIT",
   "trustedDependencies-annotation": "Needed for bun to allow running install scripts",
   "type": "module",
   "eslintConfig": {
@@ -9,8 +11,12 @@
       "sourceType": "module"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "bun test --watch"
+    "test": "bun test --watch",
+    "build": "tsup"
   },
   "devDependencies": {
     "@types/bun": "^1.1.10",
@@ -19,8 +25,8 @@
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "@typescript-eslint/parser": "^7.16.1",
     "eslint": "^8.57.0",
-    "eslint-plugin-qwik": "^1.7.1",
     "prettier": "^3.3.3",
+    "tsup": "^8.3.0",
     "typescript": "5.4.5"
   }
 }

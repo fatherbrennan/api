@@ -1,5 +1,5 @@
-import { Api, ApiRequest } from '../api/common/api';
-import { MIME } from '../api/common/constants';
+import { Api, ApiRequest } from '../api/api';
+import { MIME } from '../api/constants';
 import { imdbDirName, imdbTvDirName, imdbTvSearchFileName } from './constants';
 
 import type { Data } from './constants';
