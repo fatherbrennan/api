@@ -106,7 +106,6 @@ export class Api {
     };
   }
 
-  // TODO: Update this.
   /**
    * @example
    * ```ts
