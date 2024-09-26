@@ -1,0 +1,16 @@
+# System
+**/.DS_Store
+*.
+
+# Development
+node_modules
+*.local
+
+# Cache
+.cache
+
+# Logs
+**/*.log
+
+# Builds
+tmp
