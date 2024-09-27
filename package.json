@@ -1,6 +1,6 @@
 {
-  "name": "api",
-  "private": true,
+  "name": "@fatherbrennan/api",
+  "version": "0.1.0",
   "description": "API by yours truly.",
   "author": "fatherbrennan",
   "license": "MIT",
@@ -12,7 +12,7 @@
     }
   },
   "files": [
-    "dist"
+    "dist/**/*"
   ],
   "scripts": {
     "test": "bun test --watch",
