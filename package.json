@@ -4,6 +4,10 @@
   "description": "API by yours truly.",
   "author": "fatherbrennan",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fatherbrennan/api.git"
+  },
   "trustedDependencies-annotation": "Needed for bun to allow running install scripts",
   "type": "module",
   "eslintConfig": {
