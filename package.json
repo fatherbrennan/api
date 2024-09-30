@@ -1,6 +1,6 @@
 {
   "name": "@fatherbrennan/api",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "API by yours truly.",
   "author": "fatherbrennan",
   "license": "MIT",
@@ -20,7 +20,8 @@
   ],
   "scripts": {
     "test": "bun test --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "publish": "bun run build && npm publish"
   },
   "devDependencies": {
     "@types/bun": "^1.1.10",
