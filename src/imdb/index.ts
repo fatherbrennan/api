@@ -3,7 +3,7 @@ import { MIME } from '../api/constants';
 import { imdbDirName, imdbTvDirName, imdbTvSearchFileName } from './constants';
 
 import type { Data } from './constants';
-import type { ImdbTitleBasics, ImdbTvSeriesDetails } from './types';
+import type { ImdbSearchItem, ImdbTitleBasics, ImdbTvSeriesDetails } from './types';
 
 export type ImdbTvSearchParams = {
   query: string;
@@ -33,7 +33,7 @@ export const apiImdbGet = <TResponse>(request: ApiRequest) => ({
           search: () => {
             request = new ApiRequest({ baseUrl: `/${imdbTvSearchFileName}` }, request);
 
-            return Api.prepareRequest<ImdbTvSeriesDetails, TResponse>(request);
+            return Api.prepareRequest<ImdbSearchItem[], TResponse>(request);
           },
           details: ({ id }: ImdbTvDetailsParams) => {
             request = new ApiRequest({ baseUrl: `/${id}.json` }, request);
