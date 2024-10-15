@@ -87,8 +87,11 @@ export type ImdbMapSeasonIndex = ImdbMapIndexUtil<typeof Data.ImdbTitleEpisode.s
 
 export type ImdbMapEpisodeIndex = ImdbMapIndexUtil<typeof Data.ImdbTitleEpisode.episodeNumber.map>;
 
-export type ImdbSearchItem = Pick<ImdbTitleEpisode, typeof Data.ImdbTitleEpisode.tconst.map> &
-  Pick<ImdbTitleBasics, typeof Data.ImdbTitleBasics.primaryTitle.map | typeof Data.ImdbTitleBasics.startYear.map>;
+export type ImdbSearchItem = Pick<ImdbTitleRatings, typeof Data.ImdbTitleRatings.numVotes.map> &
+  Pick<
+    ImdbTitleBasics,
+    typeof Data.ImdbTitleEpisode.tconst.map | typeof Data.ImdbTitleEpisode.tconst.map | typeof Data.ImdbTitleBasics.primaryTitle.map | typeof Data.ImdbTitleBasics.startYear.map
+  >;
 
 export type ImdbTvSeriesDetails = ImdbGenerated &
   Pick<

@@ -288,6 +288,7 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
         [Data.ImdbTitleBasics.tconst.map]: seriesTconst,
         [Data.ImdbTitleBasics.primaryTitle.map]: series.b[Data.ImdbTitleBasics.primaryTitle.map],
         [Data.ImdbTitleBasics.startYear.map]: series.b[Data.ImdbTitleBasics.startYear.map],
+        [Data.ImdbTitleRatings.numVotes.map]: series.r[Data.ImdbTitleRatings.numVotes.map],
       };
 
       // Write search item to JSON file.
