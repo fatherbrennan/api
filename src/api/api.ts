@@ -34,7 +34,7 @@ export interface ApiResponse<T> {
    */
   isAborted: boolean;
   /**
-   * If the request was successful, inclusive of response status code.
+   * If the request was successful, respecting the response status code.
    */
   isSuccess: boolean;
 }
@@ -98,8 +98,17 @@ export class Api {
     const url = `${request.baseUrl}${UrlBuilder.query(request.params)}`;
 
     return {
+      /**
+       * Built URL request string.
+       */
       url,
+      /**
+       * Request object.
+       */
       request,
+      /**
+       * Send request and return response.
+       */
       fetch: async () => {
         return this.fetch<TDefaultResponse, TResponse>(url, request);
       },

@@ -2,15 +2,11 @@ import { Api, ApiRequest } from '../api/api';
 import { MIME } from '../api/constants';
 import { imdbDirName, imdbTvDirName, imdbTvSearchFileName } from './constants';
 
-import type { Data } from './constants';
-import type { ImdbSearchItem, ImdbTitleBasics, ImdbTvSeriesDetails } from './types';
-
-export type ImdbTvSearchParams = {
-  query: string;
-};
+import type { TvData } from './constants';
+import type { ImdbSearchItem, ImdbTvSeriesDetails } from './types';
 
 export type ImdbTvDetailsParams = {
-  id: ImdbTitleBasics[typeof Data.ImdbTitleBasics.tconst.map];
+  id: ImdbTvSeriesDetails[typeof TvData.tconst];
 };
 
 export const apiImdbGet = <TResponse>(request: ApiRequest) => ({
