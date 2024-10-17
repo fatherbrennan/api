@@ -2,76 +2,55 @@ import { gunzipSync, write } from 'bun';
 import { parse } from 'papaparse';
 
 import { FileSystem } from '../../api/file-system';
-import { Data, imdbDirName, imdbTvDirName, imdbTvSearchFileName, TitleType } from '../constants';
+import { ImdbData, imdbDirName, imdbTvDirName, imdbTvSearchFileName, TitleType, TvData } from '../constants';
 import { sortAsc } from './utils';
 
-import type {
-  ImdbMap,
-  ImdbMapEpisodeIndex,
-  ImdbMapSeasonIndex,
-  ImdbSearchItem,
-  ImdbTitleBasics,
-  ImdbTitleEpisode,
-  ImdbTitleEpisodeRaw,
-  ImdbTitleRatings,
-  ImdbTvSeriesDetails,
-  RequiredNonNullable,
-} from '../types';
+import type { RequiredNonNullable } from '../../api/types';
+import type { ImdbMap, ImdbMapEpisodeIndex, ImdbMapSeasonIndex, ImdbSearchItem, ImdbTitleBasics, ImdbTitleEpisode, ImdbTvSeriesDetails } from '../types';
 
 type Basics = Pick<
-  ImdbTitleBasics,
-  | typeof Data.ImdbTitleBasics.primaryTitle.map
-  | typeof Data.ImdbTitleBasics.startYear.map
-  | typeof Data.ImdbTitleBasics.endYear.map
-  | typeof Data.ImdbTitleBasics.runtimeMinutes.map
-  | typeof Data.ImdbTitleBasics.isAdult.map
-  | typeof Data.ImdbTitleBasics.genres.map
+  ImdbTvSeriesDetails,
+  typeof TvData.primaryTitle | typeof TvData.startYear | typeof TvData.endYear | typeof TvData.runtimeMinutes | typeof TvData.isAdult | typeof TvData.genres
 >;
 
-type Ratings = Pick<ImdbTitleRatings, typeof Data.ImdbTitleRatings.averageRating.map | typeof Data.ImdbTitleRatings.numVotes.map>;
+type Ratings = Pick<ImdbTvSeriesDetails, typeof TvData.averageRating | typeof TvData.numVotes>;
 
 type SeriesDictionary = Record<
-  ImdbTitleEpisodeRaw[typeof Data.ImdbTitleEpisode.parentTconst.col],
+  ImdbTitleEpisode[typeof ImdbData.ImdbTitleEpisode.parentTconst],
   | {
       /**
        * Basics.
        */
       b?: Basics;
       /**
-       * Ratings.
-       */
-      r?: Ratings;
-      /**
        * Episodes.
        */
-      e: ImdbTitleEpisode[typeof Data.ImdbTitleEpisode.tconst.map][];
+      e: ImdbTitleEpisode[typeof ImdbData.ImdbTitleEpisode.tconst][];
     }
   | undefined
 >;
 
-// type Episode = Pick<ImdbTitleEpisodeRaw[typeof Data.ImdbTitleEpisode.]>
-
 type EpisodeDictionary = Record<
-  ImdbTitleEpisode[typeof Data.ImdbTitleEpisode.tconst.map],
-  | (RequiredNonNullable<Pick<ImdbTitleEpisode, typeof Data.ImdbTitleEpisode.seasonNumber.map | typeof Data.ImdbTitleEpisode.episodeNumber.map>> &
-      Partial<Basics> &
-      Partial<Ratings>)
-  | undefined
+  ImdbTitleEpisode[typeof ImdbData.ImdbTitleEpisode.tconst],
+  (RequiredNonNullable<Pick<ImdbTitleEpisode, typeof ImdbData.ImdbTitleEpisode.seasonNumber | typeof ImdbData.ImdbTitleEpisode.episodeNumber>> & Partial<Basics>) | undefined
 >;
 
-interface ImdbDatasetConfig<T extends keyof typeof Data> {
+type RatingDictionary = Record<ImdbTitleBasics[typeof ImdbData.ImdbTitleBasics.tconst], Ratings | undefined>;
+
+interface ImdbDatasetConfig<T extends keyof typeof ImdbData> {
   source: string;
-  handler: (data: (typeof Data)[T]['$col']) => void;
+  handler: (data: (typeof ImdbData)[T]['$type']) => void;
 }
 
 (async () => {
   const imdbDir = FileSystem.directory(imdbDirName);
   const imdbTvDir = FileSystem.directory(imdbTvDirName, imdbDir);
   const imdbTvSearchFile = FileSystem.file(imdbTvSearchFileName, imdbTvDir);
+  const ratingDictionary: RatingDictionary = {};
   const seriesDictionary: SeriesDictionary = {};
   const episodeDictionary: EpisodeDictionary = {};
 
-  async function imdbDataset<T extends keyof typeof Data>(dataset: T, { source, handler }: ImdbDatasetConfig<T>) {
+  async function imdbDataset<T extends keyof typeof ImdbData>(dataset: T, { source, handler }: ImdbDatasetConfig<T>) {
     // Decoder.
     const decoder = new TextDecoder();
 
@@ -82,12 +61,12 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
     }
 
     // Extract.
-    // Logging
+    // Logging.
     console.log(`[GZIP]: ${dataset}->Extract->Start`);
     const gzipBuffer = await response.arrayBuffer();
     const tsvBuffer = gunzipSync(gzipBuffer);
     const tsvString = decoder.decode(tsvBuffer);
-    // Logging
+    // Logging.
     console.log(`[GZIP]: ${dataset}->Extract->Done`);
 
     // Verbose.
@@ -95,14 +74,14 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
     let logger = 0;
 
     // Write to JSON file.
-    async function handleStep(data: (typeof Data)[T]['$col']) {
+    async function handleStep(data: (typeof ImdbData)[T]['$type']) {
       try {
         logger++;
 
         // Add to relevant dictionary.
         handler(data);
 
-        // Logging
+        // Logging.
         logger % loggerSize === 0 && console.log(`[PARSE]: ${dataset}->${logger}->rows`);
       } catch (error) {
         console.error(error);
@@ -111,7 +90,7 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
     }
 
     // Parse TSV.
-    parse<(typeof Data)[T]['$col']>(tsvString, {
+    parse<(typeof ImdbData)[T]['$type']>(tsvString, {
       header: true,
       dynamicTyping: true,
       delimiter: '\t',
@@ -125,6 +104,20 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
   try {
     const ts = performance.now();
 
+    // Handle rating data first since it is a smaller dataset and the main filter.
+    await imdbDataset('ImdbTitleRatings', {
+      source: 'https://datasets.imdbws.com/title.ratings.tsv.gz',
+      handler: (data) => {
+        const { averageRating, numVotes, tconst } = data;
+
+        // Add all ratings to the dictionary.
+        ratingDictionary[tconst] = {
+          [TvData.averageRating]: averageRating,
+          [TvData.numVotes]: numVotes,
+        };
+      },
+    });
+
     await imdbDataset('ImdbTitleEpisode', {
       source: 'https://datasets.imdbws.com/title.episode.tsv.gz',
       handler: (data) => {
@@ -137,43 +130,20 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
 
         const { parentTconst: seriesTconst, tconst: episodeTconst } = data;
 
+        // Do not include any series or episodes that have no rating information.
+        if (ratingDictionary[seriesTconst] === undefined || ratingDictionary[episodeTconst] === undefined) {
+          return;
+        }
+
         // Ensure series exists.
         !seriesDictionary[seriesTconst] && (seriesDictionary[seriesTconst] = { e: [] });
 
         // Map and store wanted values.
         seriesDictionary[seriesTconst].e.push(episodeTconst);
         episodeDictionary[episodeTconst] = {
-          [Data.ImdbTitleEpisode.seasonNumber.map]: seasonNumber,
-          [Data.ImdbTitleEpisode.episodeNumber.map]: episodeNumber,
+          [ImdbData.ImdbTitleEpisode.seasonNumber]: seasonNumber,
+          [ImdbData.ImdbTitleEpisode.episodeNumber]: episodeNumber,
         };
-      },
-    });
-
-    await imdbDataset('ImdbTitleRatings', {
-      source: 'https://datasets.imdbws.com/title.ratings.tsv.gz',
-      handler: (data) => {
-        const { averageRating, numVotes, tconst } = data;
-        const rating = {
-          [Data.ImdbTitleRatings.averageRating.map]: averageRating,
-          [Data.ImdbTitleRatings.numVotes.map]: numVotes,
-        };
-
-        // Add rating to series if series.
-        if (seriesDictionary[tconst]) {
-          // Map and store wanted values.
-          seriesDictionary[tconst].r = rating;
-          return;
-        }
-
-        // Add rating to episode if episode.
-        if (episodeDictionary[tconst]) {
-          // Map and store wanted values.
-          episodeDictionary[tconst] = {
-            ...episodeDictionary[tconst],
-            ...rating,
-          };
-          return;
-        }
       },
     });
 
@@ -192,12 +162,12 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
 
         const { endYear, genres, isAdult, primaryTitle, runtimeMinutes, startYear } = data;
         const basics = {
-          [Data.ImdbTitleBasics.primaryTitle.map]: primaryTitle,
-          [Data.ImdbTitleBasics.startYear.map]: startYear,
-          [Data.ImdbTitleBasics.endYear.map]: endYear,
-          [Data.ImdbTitleBasics.runtimeMinutes.map]: runtimeMinutes,
-          [Data.ImdbTitleBasics.isAdult.map]: isAdult,
-          [Data.ImdbTitleBasics.genres.map]: genres,
+          [TvData.primaryTitle]: primaryTitle.toString(),
+          [TvData.startYear]: startYear,
+          [TvData.endYear]: endYear,
+          [TvData.runtimeMinutes]: runtimeMinutes,
+          [TvData.isAdult]: isAdult === 1,
+          [TvData.genres]: genres ? genres.split(',') : [],
         };
 
         // Handle series.
@@ -226,14 +196,15 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
     let doesSearchHaveFirstJsonItem = false;
     let seriesCounter = 0;
 
-    // Logging
+    // Logging.
     console.log('[API]: Generate->Start');
 
     for (const seriesTconst in seriesDictionary) {
       const series = seriesDictionary[seriesTconst]!;
+      const rating = ratingDictionary[seriesTconst];
 
-      // Guard should prevent unrated episodes.
-      if (!series.b || !series.r || series.e.length === 0) {
+      // Guard should prevent unrated series.
+      if (!series.b || !rating || series.e.length === 0) {
         // Remove used tv, or tv mini series.
         delete seriesDictionary[seriesTconst];
         continue;
@@ -247,15 +218,11 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
 
       for (let i = 0; i < episodes.length; i++) {
         const episodeTconst = series.e[i];
+        const rating = ratingDictionary[episodeTconst]!;
         const episode = episodeDictionary[episodeTconst]!;
 
-        const {
-          [Data.ImdbTitleBasics.primaryTitle.map]: primaryTitle,
-          [Data.ImdbTitleEpisode.seasonNumber.map]: seasonNumber,
-          [Data.ImdbTitleEpisode.episodeNumber.map]: episodeNumber,
-          [Data.ImdbTitleRatings.averageRating.map]: averageRating,
-          [Data.ImdbTitleRatings.numVotes.map]: numVotes,
-        } = episode;
+        const { [TvData.averageRating]: averageRating, [TvData.numVotes]: numVotes } = rating;
+        const { [TvData.primaryTitle]: primaryTitle, [ImdbData.ImdbTitleEpisode.seasonNumber]: seasonNumber, [ImdbData.ImdbTitleEpisode.episodeNumber]: episodeNumber } = episode;
 
         // Add indexes.
         seasonIndexSet.add(seasonNumber);
@@ -264,31 +231,25 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
         // Create the season object path if it does not exist.
         !tvSeriesMap[seasonNumber] && (tvSeriesMap[seasonNumber] = {});
 
-        // Guard should never be reached, but used to ensure expected data.
-        if (!primaryTitle || averageRating === undefined || numVotes === undefined) {
-          // Remove used episode.
-          delete episodeDictionary[episodeTconst];
-          continue;
-        }
-
         // Create episode path in map.
         tvSeriesMap[seasonNumber][episodeNumber] = {
-          [Data.ImdbTitleEpisode.tconst.map]: episodeTconst,
-          [Data.ImdbTitleBasics.primaryTitle.map]: primaryTitle,
-          [Data.ImdbTitleRatings.averageRating.map]: averageRating,
-          [Data.ImdbTitleRatings.numVotes.map]: numVotes,
+          [TvData.tconst]: episodeTconst,
+          [TvData.primaryTitle]: primaryTitle ?? '',
+          [TvData.averageRating]: averageRating,
+          [TvData.numVotes]: numVotes,
         };
 
-        // Remove used episode.
+        // Remove used episode data.
         delete episodeDictionary[episodeTconst];
+        delete ratingDictionary[episodeTconst];
       }
 
       // Create search item to be indexed by search engine.
       const searchItem: ImdbSearchItem = {
-        [Data.ImdbTitleBasics.tconst.map]: seriesTconst,
-        [Data.ImdbTitleBasics.primaryTitle.map]: series.b[Data.ImdbTitleBasics.primaryTitle.map],
-        [Data.ImdbTitleBasics.startYear.map]: series.b[Data.ImdbTitleBasics.startYear.map],
-        [Data.ImdbTitleRatings.numVotes.map]: series.r[Data.ImdbTitleRatings.numVotes.map],
+        [TvData.tconst]: seriesTconst,
+        [TvData.primaryTitle]: series.b[TvData.primaryTitle],
+        [TvData.startYear]: series.b[TvData.startYear],
+        [TvData.numVotes]: rating[TvData.numVotes],
       };
 
       // Write search item to JSON file.
@@ -298,15 +259,15 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
       // Create API result.
       const imdbTvSeriesDetails: ImdbTvSeriesDetails = {
         ...searchItem,
-        [Data.ImdbTitleBasics.runtimeMinutes.map]: series.b[Data.ImdbTitleBasics.runtimeMinutes.map],
-        [Data.ImdbTitleBasics.endYear.map]: series.b[Data.ImdbTitleBasics.endYear.map],
-        [Data.ImdbTitleBasics.isAdult.map]: series.b[Data.ImdbTitleBasics.isAdult.map],
-        [Data.ImdbTitleRatings.averageRating.map]: series.r[Data.ImdbTitleRatings.averageRating.map],
-        [Data.ImdbTitleRatings.numVotes.map]: series.r[Data.ImdbTitleRatings.numVotes.map],
-        [Data.Generated.genres.map]: series.b[Data.ImdbTitleBasics.genres.map] ? series.b[Data.ImdbTitleBasics.genres.map]!.split(',') : [],
-        [Data.Generated.seasonsIndex.map]: [...seasonIndexSet].sort(sortAsc),
-        [Data.Generated.episodeIndex.map]: [...episodeIndexSet].sort(sortAsc),
-        [Data.Generated.episodeMap.map]: tvSeriesMap,
+        [TvData.runtimeMinutes]: series.b[TvData.runtimeMinutes],
+        [TvData.endYear]: series.b[TvData.endYear],
+        [TvData.averageRating]: rating[TvData.averageRating],
+        [TvData.numVotes]: rating[TvData.numVotes],
+        [TvData.isAdult]: series.b[TvData.isAdult],
+        [TvData.genres]: series.b[TvData.genres],
+        [TvData.seasonsIndex]: [...seasonIndexSet].sort(sortAsc),
+        [TvData.episodeIndex]: [...episodeIndexSet].sort(sortAsc),
+        [TvData.episodeMap]: tvSeriesMap,
       };
 
       // Write API endpoint for tv, or mini series.
@@ -323,12 +284,12 @@ interface ImdbDatasetConfig<T extends keyof typeof Data> {
     imdbTvSearchFile.writer().write(']');
     await imdbTvSearchFile.writer().end();
 
-    // Logging
+    // Logging.
     console.log('[API]: Generate->End');
     console.log(`[API]: Generate->${seriesCounter}->items`);
 
     const te = performance.now();
-    // Logging
+    // Logging.
     console.log(`[TIME]: ${te - ts}ms`);
   } catch (error) {
     console.error('[ERROR]: Fetching, extracting and inserting data into database', error);

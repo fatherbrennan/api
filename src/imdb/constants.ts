@@ -1,23 +1,11 @@
-import type { InferDataset, TypeAsString } from './types';
-
-export type DatasetFieldConfig = {
-  col: string;
-  map: string;
-  _required: boolean;
-  _type: TypeAsString;
-};
-
-export type DatasetConfig = Record<string, DatasetFieldConfig>;
+import { Type } from '../api/constants';
+import { createDataset } from '../api/dataset';
 
 export const imdbDirName = 'imdb';
 
 export const imdbTvDirName = 'tv';
 
 export const imdbTvSearchFileName = 'search.json';
-
-const createDataset = <T extends DatasetConfig>(dataset: T) => {
-  return dataset as unknown as InferDataset<T>;
-};
 
 export const TitleType = {
   Movie: 'movie',
@@ -32,90 +20,81 @@ export const TitleType = {
   VideoGame: 'videoGame',
 } as const;
 
-export const Data = {
+export const ImdbData = {
   ImdbTitleBasics: createDataset({
     /**
      * Alphanumeric unique identifier of the title.
      */
     tconst: {
-      col: 'tconst',
-      map: 'id',
+      key: 'tconst',
       _required: true,
-      _type: 'string',
+      _type: Type.String,
     },
     /**
      * The type/format of the title.
      */
     titleType: {
-      col: 'titleType',
-      map: 'tT',
+      key: 'titleType',
       _required: true,
-      _type: 'titleType',
+      _type: Type.ImdbTitleType,
     },
     /**
      * The more popular title / the title used by the filmmakers on promotional materials at the point of release.
      */
     primaryTitle: {
-      col: 'primaryTitle',
-      map: 'pT',
+      key: 'primaryTitle',
       _required: true,
-      _type: 'string',
+      _type: Type.String,
     },
     /**
      * Original title, in the original language.
      */
     originalTitle: {
-      col: 'originalTitle',
-      map: 'oT',
+      key: 'originalTitle',
       _required: true,
-      _type: 'string',
+      _type: Type.String,
     },
     /**
      * - `0`: non-adult title.
      * - `1`: adult title.
      */
     isAdult: {
-      col: 'isAdult',
-      map: 'iA',
+      key: 'isAdult',
       _required: true,
-      _type: 'boolean',
+      _type: Type.Bit,
     },
     /**
      * Represents the release year of a title. In the case of TV Series, it is the series start year.
      */
     startYear: {
-      col: 'startYear',
-      map: 'sY',
+      key: 'startYear',
       _required: false,
-      _type: 'number',
+      _type: Type.Number,
     },
     /**
      * TV Series end year. `‘\N’` for all other title types.
      */
     endYear: {
-      col: 'endYear',
-      map: 'eY',
+      key: 'endYear',
       _required: false,
-      _type: 'number',
+      _type: Type.Number,
     },
     /**
      * Primary runtime of the title, in minutes.
      */
     runtimeMinutes: {
-      col: 'runtimeMinutes',
-      map: 'rM',
+      key: 'runtimeMinutes',
       _required: false,
-      _type: 'number',
+      _type: Type.Number,
     },
     /**
      * Includes up to three genres associated with the title.
      * CSV format.
      */
     genres: {
-      col: 'genres',
-      map: 'g',
+      key: 'genres',
       _required: false,
-      _type: 'string',
+      _type: Type.String,
     },
   } as const),
   ImdbTitleEpisode: createDataset({
@@ -123,37 +102,33 @@ export const Data = {
      * Alphanumeric identifier of episode.
      */
     tconst: {
-      col: 'tconst',
-      map: 'id',
+      key: 'tconst',
       _required: true,
-      _type: 'string',
+      _type: Type.String,
     },
     /**
      * Alphanumeric identifier of the parent TV Series.
      */
     parentTconst: {
-      col: 'parentTconst',
-      map: 'pId',
+      key: 'parentTconst',
       _required: true,
-      _type: 'string',
+      _type: Type.String,
     },
     /**
      * Season number the episode belongs to.
      */
     seasonNumber: {
-      col: 'seasonNumber',
-      map: 'sN',
+      key: 'seasonNumber',
       _required: false,
-      _type: 'number',
+      _type: Type.Number,
     },
     /**
      * Episode number of the tconst in the TV series.
      */
     episodeNumber: {
-      col: 'episodeNumber',
-      map: 'eN',
+      key: 'episodeNumber',
       _required: false,
-      _type: 'number',
+      _type: Type.Number,
     },
   } as const),
   ImdbTitleRatings: createDataset({
@@ -161,66 +136,127 @@ export const Data = {
      * Alphanumeric unique identifier of the title.
      */
     tconst: {
-      col: 'tconst',
-      map: 'id',
+      key: 'tconst',
       _required: true,
-      _type: 'string',
+      _type: Type.String,
     },
     /**
      * Weighted average of all the individual user ratings.
      */
     averageRating: {
-      col: 'averageRating',
-      map: 'aR',
+      key: 'averageRating',
       _required: true,
-      _type: 'number',
+      _type: Type.Number,
     },
     /**
      * Number of votes the title has received.
      */
     numVotes: {
-      col: 'numVotes',
-      map: 'nV',
+      key: 'numVotes',
       _required: true,
-      _type: 'number',
-    },
-  } as const),
-  Generated: createDataset({
-    /**
-     * Ordered index for episodes in the episode map.
-     */
-    episodeIndex: {
-      col: 'episodeIndex',
-      map: 'eI',
-      _required: true,
-      _type: 'mapIndex',
-    },
-    /**
-     * Ordered index for seasons in the episode map.
-     */
-    seasonsIndex: {
-      col: 'seasonsIndex',
-      map: 'sI',
-      _required: true,
-      _type: 'mapIndex',
-    },
-    /**
-     * Map of all the episodes.
-     */
-    episodeMap: {
-      col: 'episodeMap',
-      map: 'eM',
-      _required: true,
-      _type: 'map',
-    },
-    /**
-     * Genres in a string array.
-     */
-    genres: {
-      col: 'genres',
-      map: 'g',
-      _required: true,
-      _type: 'stringArray',
+      _type: Type.Number,
     },
   } as const),
 } as const;
+
+/**
+ * IMDb API data structure.
+ */
+export const TvData = createDataset({
+  /**
+   * Alphanumeric unique identifier of the title.
+   */
+  tconst: {
+    key: 'id',
+    _required: true,
+    _type: Type.String,
+  },
+  /**
+   * The more popular title / the title used by the filmmakers on promotional materials at the point of release.
+   */
+  primaryTitle: {
+    key: 'pT',
+    _required: true,
+    _type: Type.String,
+  },
+  /**
+   * Represents the release year of a title. In the case of TV Series, it is the series start year.
+   */
+  startYear: {
+    key: 'sY',
+    _required: false,
+    _type: Type.Number,
+  },
+  /**
+   * TV Series end year. `‘\N’` for all other title types.
+   */
+  endYear: {
+    key: 'eY',
+    _required: false,
+    _type: Type.Number,
+  },
+  /**
+   * Primary runtime of the title, in minutes.
+   */
+  runtimeMinutes: {
+    key: 'rM',
+    _required: false,
+    _type: Type.Number,
+  },
+  /**
+   * Weighted average of all the individual user ratings.
+   */
+  averageRating: {
+    key: 'aR',
+    _required: true,
+    _type: Type.Number,
+  },
+  /**
+   * Number of votes the title has received.
+   */
+  numVotes: {
+    key: 'nV',
+    _required: true,
+    _type: Type.Number,
+  },
+  /**
+   * Boolean representation if title is adult content.
+   */
+  isAdult: {
+    key: 'iA',
+    _required: true,
+    _type: Type.Boolean,
+  },
+  /**
+   * Genres in a string array.
+   */
+  genres: {
+    key: 'g',
+    _required: true,
+    _type: Type.StringArray,
+  },
+  /**
+   * Ordered index for episodes in the episode map.
+   */
+  episodeIndex: {
+    key: 'eI',
+    _required: true,
+    _type: Type.ImdbMapIndex,
+  },
+  /**
+   * Ordered index for seasons in the episode map.
+   */
+  seasonsIndex: {
+    key: 'sI',
+    _required: true,
+    _type: Type.ImdbMapIndex,
+  },
+  /**
+   * Map of all the episodes.
+   */
+  episodeMap: {
+    key: 'eM',
+    _required: true,
+    _type: Type.ImdbMap,
+  },
+} as const);
