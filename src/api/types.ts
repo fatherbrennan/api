@@ -29,7 +29,7 @@ export type SetNullable<T, R extends boolean> = R extends true ? T : Nullable<T>
 /**
  * Get the type from provided `Type` value.
  */
-export type GetTypeFromString<T extends (typeof Type)[keyof typeof Type]> = T extends typeof Type.Bit
+export type GetTypeFromString<T> = T extends typeof Type.Bit
   ? 0 | 1
   : T extends typeof Type.Boolean
     ? boolean

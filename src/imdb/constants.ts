@@ -44,7 +44,7 @@ export const ImdbData = {
     primaryTitle: {
       key: 'primaryTitle',
       _required: true,
-      _type: Type.String,
+      _type: [Type.String, Type.Number],
     },
     /**
      * Original title, in the original language.

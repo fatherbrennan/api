@@ -110,11 +110,13 @@ interface ImdbDatasetConfig<T extends keyof typeof ImdbData> {
       handler: (data) => {
         const { averageRating, numVotes, tconst } = data;
 
-        // Add all ratings to the dictionary.
-        ratingDictionary[tconst] = {
+        const ratings: Ratings = {
           [TvData.averageRating]: averageRating,
           [TvData.numVotes]: numVotes,
         };
+
+        // Add all ratings to the dictionary.
+        ratingDictionary[tconst] = ratings;
       },
     });
 
@@ -161,7 +163,7 @@ interface ImdbDatasetConfig<T extends keyof typeof ImdbData> {
         }
 
         const { endYear, genres, isAdult, primaryTitle, runtimeMinutes, startYear } = data;
-        const basics = {
+        const basics: Basics = {
           [TvData.primaryTitle]: primaryTitle.toString(),
           [TvData.startYear]: startYear,
           [TvData.endYear]: endYear,

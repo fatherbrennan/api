@@ -1,11 +1,10 @@
 import type { Type } from './constants';
-
 import type { GetTypeFromString, SetNullable } from './types';
 
 export type DatasetFieldConfig = {
   key: string;
   _required: boolean;
-  _type: (typeof Type)[keyof typeof Type];
+  _type: (typeof Type)[keyof typeof Type] | (typeof Type)[keyof typeof Type][];
 };
 
 export type DatasetConfig = Record<string, DatasetFieldConfig>;
@@ -13,7 +12,7 @@ export type DatasetConfig = Record<string, DatasetFieldConfig>;
 export type InferDataset<T extends DatasetConfig> = {
   [K in keyof T]: T[K]['key'];
 } & {
-  $type: { [K in keyof T as T[K]['key']]: SetNullable<GetTypeFromString<T[K]['_type']>, T[K]['_required']> };
+  $type: { [K in keyof T as T[K]['key']]: SetNullable<GetTypeFromString<T[K]['_type'] extends any[] ? T[K]['_type'][number] : T[K]['_type']>, T[K]['_required']> };
 };
 
 /**
