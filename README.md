@@ -6,7 +6,36 @@ API by yours truly :tada:.
 
 - ### [IMDb](./src/imdb/README.md)
 
-## Directory structure
+## Usage
+
+**IMDb API example**
+
+```typescript
+import { Api } from '@fatherbrennan/api/dist/api';
+import { TvData } from '@fatherbrennan/api/dist/imdb';
+
+// Create a request to an API endpoint.
+const request = Api.get().imdb().tv().search();
+
+// URL request string. Can be used to pass to custom HTTP handler.
+request.url;
+
+// Send the request and save the response.
+const response = await request.fetch();
+
+// Handling the response.
+const { data, isSuccess } = response;
+
+if (isSuccess && data !== null) {
+  // Handle expected response.
+  // Print the first search item title.
+  console.log(data[0][TvData.primaryTitle]);
+}
+```
+
+## Development
+
+### Directory structure
 
 - `/` Global configuration and license files.
   - `.github/workflows` GitHub Actions workflows.
@@ -24,5 +53,3 @@ API by yours truly :tada:.
 Code and documentation found in the `master` branch is subject to an MIT license.
 
 Data files found in the `get` branch are subject to their own license, which can be found in their respective directory in the `master` branch.
-
-**Example**
