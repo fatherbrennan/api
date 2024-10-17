@@ -1,1 +1,1 @@
-{"id":"tt27562594","pT":"Grand Prix","sY":2023,"rM":null,"eY":null,"iA":0,"aR":8,"nV":23,"g":["Adventure","Family","Game-Show"],"sI":[1,2],"eI":[1,2,3,4,5,6,7,8,9,10],"eM":{"1":{"1":{"id":"tt28487288","pT":"Alfacar vs Colmenarejo","aR":8.2,"nV":5}},"2":{}}}
+{"id":"tt27562594","pT":"Grand Prix","sY":2023,"nV":23,"rM":null,"eY":null,"aR":8,"iA":false,"g":["Adventure","Family","Game-Show"],"sI":[1],"eI":[1],"eM":{"1":{"1":{"id":"tt28487288","pT":"Alfacar vs Colmenarejo","aR":8.2,"nV":5}}}}

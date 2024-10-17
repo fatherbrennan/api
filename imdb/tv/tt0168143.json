@@ -1,1 +1,1 @@
-{"id":"tt0168143","pT":"Rayearth","sY":1997,"rM":60,"eY":null,"iA":0,"aR":6.4,"nV":246,"g":["Action","Adventure","Animation"],"sI":[1],"eI":[1,2,3],"eM":{"1":{"1":{"id":"tt5795320","pT":"Episode #1.1","aR":6.2,"nV":6},"2":{"id":"tt5795304","pT":"Episode #1.2","aR":5.8,"nV":6}}}}
+{"id":"tt0168143","pT":"Rayearth","sY":1997,"nV":246,"rM":60,"eY":null,"aR":6.4,"iA":false,"g":["Action","Adventure","Animation"],"sI":[1],"eI":[1,2],"eM":{"1":{"1":{"id":"tt5795320","pT":"Episode #1.1","aR":6.2,"nV":6},"2":{"id":"tt5795304","pT":"Episode #1.2","aR":5.8,"nV":6}}}}

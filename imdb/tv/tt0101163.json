@@ -1,1 +1,1 @@
-{"id":"tt0101163","pT":"Palace Guard","sY":1991,"rM":60,"eY":1993,"iA":0,"aR":6.9,"nV":43,"g":["Action","Comedy"],"sI":[1],"eI":[1,2,3,4,5,6,7,8,9],"eM":{"1":{"1":{"id":"tt1081633","pT":"Pilot","aR":7,"nV":9},"2":{"id":"tt0668917","pT":"The Three-Minute Egg","aR":6,"nV":8}}}}
+{"id":"tt0101163","pT":"Palace Guard","sY":1991,"nV":43,"rM":60,"eY":1993,"aR":6.9,"iA":false,"g":["Action","Comedy"],"sI":[1],"eI":[1,2],"eM":{"1":{"1":{"id":"tt1081633","pT":"Pilot","aR":7,"nV":9},"2":{"id":"tt0668917","pT":"The Three-Minute Egg","aR":6,"nV":8}}}}

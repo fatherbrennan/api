@@ -1,1 +1,1 @@
-{"id":"tt0112139","pT":"Resort to Murder","sY":1995,"rM":50,"eY":1995,"iA":0,"aR":6.5,"nV":96,"g":["Crime","Mystery"],"sI":[1],"eI":[1,2,3,4,5],"eM":{"1":{"1":{"id":"tt1317630","pT":"Episode #1.1","aR":5.5,"nV":8},"2":{"id":"tt1317631","pT":"Episode #1.2","aR":6,"nV":5}}}}
+{"id":"tt0112139","pT":"Resort to Murder","sY":1995,"nV":96,"rM":50,"eY":1995,"aR":6.5,"iA":false,"g":["Crime","Mystery"],"sI":[1],"eI":[1,2],"eM":{"1":{"1":{"id":"tt1317630","pT":"Episode #1.1","aR":5.5,"nV":8},"2":{"id":"tt1317631","pT":"Episode #1.2","aR":6,"nV":5}}}}

@@ -1,1 +1,1 @@
-{"id":"tt0098789","pT":"Equal Justice","sY":1990,"rM":60,"eY":1991,"iA":0,"aR":6.2,"nV":136,"g":["Drama","Romance"],"sI":[1,2],"eI":[1,2,3,4,5,6,7,8,9,10,11,12,13],"eM":{"1":{"1":{"id":"tt1279622","pT":"Pilot","aR":6,"nV":8}},"2":{"9":{"id":"tt0572519","pT":"Do the Wrong Thing","aR":9,"nV":7}}}}
+{"id":"tt0098789","pT":"Equal Justice","sY":1990,"nV":136,"rM":60,"eY":1991,"aR":6.2,"iA":false,"g":["Drama","Romance"],"sI":[1,2],"eI":[1,9],"eM":{"1":{"1":{"id":"tt1279622","pT":"Pilot","aR":6,"nV":8}},"2":{"9":{"id":"tt0572519","pT":"Do the Wrong Thing","aR":9,"nV":7}}}}

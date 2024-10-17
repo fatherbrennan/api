@@ -1,1 +1,1 @@
-{"id":"tt0147751","pT":"Bigfoot and Wildboy","sY":1977,"rM":30,"eY":null,"iA":0,"aR":6.5,"nV":171,"g":["Adventure"],"sI":[1,2],"eI":[1,2,3,4,5,6,7,8,9,10,11,12],"eM":{"1":{"4":{"id":"tt4840750","pT":"UFO","aR":6.4,"nV":6},"6":{"id":"tt4162668","pT":"Amazon Contest","aR":6.8,"nV":7}},"2":{}}}
+{"id":"tt0147751","pT":"Bigfoot and Wildboy","sY":1977,"nV":171,"rM":30,"eY":null,"aR":6.5,"iA":false,"g":["Adventure"],"sI":[1],"eI":[4,6],"eM":{"1":{"4":{"id":"tt4840750","pT":"UFO","aR":6.4,"nV":6},"6":{"id":"tt4162668","pT":"Amazon Contest","aR":6.8,"nV":7}}}}

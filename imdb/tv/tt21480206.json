@@ -1,1 +1,1 @@
-{"id":"tt21480206","pT":"Celebrity Bridge of Lies","sY":2023,"rM":null,"eY":null,"iA":0,"aR":6.5,"nV":17,"g":["Game-Show"],"sI":[1,2],"eI":[1,2,3,4,5,6,7,8],"eM":{"1":{"5":{"id":"tt25809760","pT":"Episode #1.5","aR":7,"nV":5},"6":{"id":"tt25809762","pT":"Episode #1.6","aR":6.8,"nV":5}},"2":{}}}
+{"id":"tt21480206","pT":"Celebrity Bridge of Lies","sY":2023,"nV":17,"rM":null,"eY":null,"aR":6.5,"iA":false,"g":["Game-Show"],"sI":[1],"eI":[5,6],"eM":{"1":{"5":{"id":"tt25809760","pT":"Episode #1.5","aR":7,"nV":5},"6":{"id":"tt25809762","pT":"Episode #1.6","aR":6.8,"nV":5}}}}

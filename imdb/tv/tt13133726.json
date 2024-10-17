@@ -1,1 +1,1 @@
-{"id":"tt13133726","pT":"Bank Balance","sY":2021,"rM":null,"eY":2021,"iA":0,"aR":4.1,"nV":125,"g":["Game-Show"],"sI":[1],"eI":[1,2,3,4,5,6,7,8,9,10],"eM":{"1":{"1":{"id":"tt14057170","pT":"Episode #1.1","aR":4,"nV":10}}}}
+{"id":"tt13133726","pT":"Bank Balance","sY":2021,"nV":125,"rM":null,"eY":2021,"aR":4.1,"iA":false,"g":["Game-Show"],"sI":[1],"eI":[1],"eM":{"1":{"1":{"id":"tt14057170","pT":"Episode #1.1","aR":4,"nV":10}}}}
