@@ -16,6 +16,6 @@
     "noEmit": true,
     "tsBuildInfoFile": ".tsbuildinfo"
   },
-  "files": ["./prettier.config.mjs"],
+  "files": [],
   "include": ["./**/*.ts", "./**/*.tsx", "./*.d.ts", "./*.config.ts"]
 }
