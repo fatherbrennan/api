@@ -35,16 +35,20 @@ if (isSuccess && data !== null) {
 
 ## Development
 
+### Prerequisites
+
+- [Bun](https://bun.sh/) (`^v1.2.21`)
+
 ### Directory structure
 
 - `/` Global configuration and license files.
   - `.github/workflows` GitHub Actions workflows.
   - `.vscode/` Visual Studio Code workspace settings and configuration files.
   - `src/` Source files.
-  - `src/` Source files.
     - `api/` Shared TypeScript, Bun and Node code.
       - `common/` Files to be included in NPM package.
-    - `*/` Source files for each individual API.
+    - `endpoint/`
+      - `*/` Source files for each individual API endpoint. E.g. `imdb`.
   - `dist/` Build files for NPM.
   - `tmp/` Build files from scripts.
 

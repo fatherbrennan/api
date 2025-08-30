@@ -1,5 +1,5 @@
-import { Type } from '../api/constants';
-import { createDataset } from '../api/dataset';
+import { Type } from '../../api/constants';
+import { createDataset } from '../../api/dataset';
 
 export const imdbDirName = 'imdb';
 

@@ -2,11 +2,6 @@
   "private": true,
   "trustedDependencies-annotation": "Needed for bun to allow running install scripts",
   "type": "module",
-  "eslintConfig": {
-    "parserOptions": {
-      "sourceType": "module"
-    }
-  },
   "scripts": {
     "build:api": "bun run ./src/createApiInMemory.ts"
   },
