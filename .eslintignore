@@ -1,9 +1,0 @@
-**/*.log
-**/.DS_Store
-*.
-.vscode
-.cache
-node_modules
-bun.lockb
-package-lock.json
-dist
