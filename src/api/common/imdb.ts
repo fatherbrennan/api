@@ -1,2 +1,2 @@
-export * from '../../imdb/constants';
-export * from '../../imdb/types';
+export * from '../../endpoint/imdb/constants';
+export * from '../../endpoint/imdb/types';

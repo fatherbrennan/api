@@ -14,11 +14,17 @@
     "dist/**/*"
   ],
   "scripts": {
+    "format": "biome format --write",
+    "format.check": "biome check",
+    "format.fix": "biome check --fix --unsafe",
+    "lint": "biome lint --write",
+    "lint.check": "biome lint",
     "test": "bun test --watch",
     "build": "tsup",
     "publish": "bun run build && npm publish"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.2.2",
     "@types/bun": "^1.2.21",
     "@types/node": "^24.3.0",
     "tsup": "^8.5.0",

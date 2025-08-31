@@ -1,5 +1,5 @@
-import type { ImdbData, TitleType } from '../imdb/constants';
-import type { ImdbEpisode, ImdbMap, ImdbMapIndexUtil } from '../imdb/types';
+import type { ImdbData, TitleType } from '../endpoint/imdb/constants';
+import type { ImdbEpisode, ImdbMap, ImdbMapIndexUtil } from '../endpoint/imdb/types';
 import type { Type } from './constants';
 
 export type { ApiRequestProps } from './api';
@@ -38,7 +38,9 @@ export type GetTypeFromString<T> = T extends typeof Type.Bit
       : T extends typeof Type.ImdbMap
         ? ImdbMap
         : T extends typeof Type.ImdbMapIndex
-          ? ImdbMapIndexUtil<typeof ImdbData.ImdbTitleEpisode.seasonNumber | typeof ImdbData.ImdbTitleEpisode.episodeNumber>
+          ? ImdbMapIndexUtil<
+              typeof ImdbData.ImdbTitleEpisode.seasonNumber | typeof ImdbData.ImdbTitleEpisode.episodeNumber
+            >
           : T extends typeof Type.ImdbTitleType
             ? (typeof TitleType)[keyof typeof TitleType]
             : T extends typeof Type.Number

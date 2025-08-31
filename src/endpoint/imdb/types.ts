@@ -12,9 +12,15 @@ export type ImdbTvSeriesDetails = typeof TvData.$type;
 /**
  * IMDb tv series search item.
  */
-export type ImdbSearchItem = Pick<ImdbTvSeriesDetails, typeof TvData.tconst | typeof TvData.primaryTitle | typeof TvData.startYear | typeof TvData.numVotes>;
+export type ImdbSearchItem = Pick<
+  ImdbTvSeriesDetails,
+  typeof TvData.tconst | typeof TvData.primaryTitle | typeof TvData.startYear | typeof TvData.numVotes
+>;
 
-export type ImdbEpisode = Pick<ImdbTvSeriesDetails, typeof TvData.tconst | typeof TvData.primaryTitle | typeof TvData.averageRating | typeof TvData.numVotes>;
+export type ImdbEpisode = Pick<
+  ImdbTvSeriesDetails,
+  typeof TvData.tconst | typeof TvData.primaryTitle | typeof TvData.averageRating | typeof TvData.numVotes
+>;
 
 export type ImdbMapUtil<T extends keyof ImdbTitleEpisode, V> =
   | {
@@ -22,7 +28,10 @@ export type ImdbMapUtil<T extends keyof ImdbTitleEpisode, V> =
     }
   | undefined;
 
-export type ImdbMap = ImdbMapUtil<typeof ImdbData.ImdbTitleEpisode.seasonNumber, ImdbMapUtil<typeof ImdbData.ImdbTitleEpisode.episodeNumber, ImdbEpisode>>;
+export type ImdbMap = ImdbMapUtil<
+  typeof ImdbData.ImdbTitleEpisode.seasonNumber,
+  ImdbMapUtil<typeof ImdbData.ImdbTitleEpisode.episodeNumber, ImdbEpisode>
+>;
 
 export type ImdbMapIndexUtil<T extends keyof ImdbTitleEpisode> = NonNullable<ImdbTitleEpisode[T]>[];
 

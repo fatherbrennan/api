@@ -1,6 +1,6 @@
 import { file, write } from 'bun';
-import { rm } from 'fs/promises';
-import { join, resolve } from 'path';
+import { rm } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 
 import type { FileSink } from 'bun';
 
@@ -8,16 +8,25 @@ export class FileSystem {
   public static dir = 'tmp' as const;
   public static dirPath = resolve(__dirname, '..', '..', this.dir);
 
-  public static directory<TDirName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>>(name: TDirName, baseDirectory?: TFileSystemDirectory) {
+  public static directory<TDirName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>>(
+    name: TDirName,
+    baseDirectory?: TFileSystemDirectory,
+  ) {
     return new FileSystemDirectory(name, baseDirectory);
   }
 
-  public static file<TFileName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>>(name: TFileName, baseDirectory: TFileSystemDirectory) {
+  public static file<TFileName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>>(
+    name: TFileName,
+    baseDirectory: TFileSystemDirectory,
+  ) {
     return new FileSystemFile(name, baseDirectory);
   }
 }
 
-export class FileSystemDirectory<TDirName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>> {
+export class FileSystemDirectory<
+  TDirName extends string,
+  TFileSystemDirectory extends FileSystemDirectory<string, TFileSystemDirectory>,
+> {
   public dir: TDirName;
   public dirPath: string;
 

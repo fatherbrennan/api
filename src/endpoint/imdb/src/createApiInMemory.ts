@@ -1,16 +1,29 @@
 import { gunzipSync, write } from 'bun';
 import { parse } from 'papaparse';
 
-import { FileSystem } from '../../api/file-system';
+import { FileSystem } from '../../../api/file-system';
 import { ImdbData, imdbDirName, imdbTvDirName, imdbTvSearchFileName, TitleType, TvData } from '../constants';
 import { sortAsc } from './utils';
 
-import type { RequiredNonNullable } from '../../api/types';
-import type { ImdbMap, ImdbMapEpisodeIndex, ImdbMapSeasonIndex, ImdbSearchItem, ImdbTitleBasics, ImdbTitleEpisode, ImdbTvSeriesDetails } from '../types';
+import type { RequiredNonNullable } from '../../../api/types';
+import type {
+  ImdbMap,
+  ImdbMapEpisodeIndex,
+  ImdbMapSeasonIndex,
+  ImdbSearchItem,
+  ImdbTitleBasics,
+  ImdbTitleEpisode,
+  ImdbTvSeriesDetails,
+} from '../types';
 
 type Basics = Pick<
   ImdbTvSeriesDetails,
-  typeof TvData.primaryTitle | typeof TvData.startYear | typeof TvData.endYear | typeof TvData.runtimeMinutes | typeof TvData.isAdult | typeof TvData.genres
+  | typeof TvData.primaryTitle
+  | typeof TvData.startYear
+  | typeof TvData.endYear
+  | typeof TvData.runtimeMinutes
+  | typeof TvData.isAdult
+  | typeof TvData.genres
 >;
 
 type Ratings = Pick<ImdbTvSeriesDetails, typeof TvData.averageRating | typeof TvData.numVotes>;
@@ -32,7 +45,14 @@ type SeriesDictionary = Record<
 
 type EpisodeDictionary = Record<
   ImdbTitleEpisode[typeof ImdbData.ImdbTitleEpisode.tconst],
-  (RequiredNonNullable<Pick<ImdbTitleEpisode, typeof ImdbData.ImdbTitleEpisode.seasonNumber | typeof ImdbData.ImdbTitleEpisode.episodeNumber>> & Partial<Basics>) | undefined
+  | (RequiredNonNullable<
+      Pick<
+        ImdbTitleEpisode,
+        typeof ImdbData.ImdbTitleEpisode.seasonNumber | typeof ImdbData.ImdbTitleEpisode.episodeNumber
+      >
+    > &
+      Partial<Basics>)
+  | undefined
 >;
 
 type RatingDictionary = Record<ImdbTitleBasics[typeof ImdbData.ImdbTitleBasics.tconst], Ratings | undefined>;
@@ -138,7 +158,9 @@ interface ImdbDatasetConfig<T extends keyof typeof ImdbData> {
         }
 
         // Ensure series exists.
-        !seriesDictionary[seriesTconst] && (seriesDictionary[seriesTconst] = { e: [] });
+        if (!seriesDictionary[seriesTconst]) {
+          seriesDictionary[seriesTconst] = { e: [] };
+        }
 
         // Map and store wanted values.
         seriesDictionary[seriesTconst].e.push(episodeTconst);
@@ -175,6 +197,7 @@ interface ImdbDatasetConfig<T extends keyof typeof ImdbData> {
         // Handle series.
         if (isSeries) {
           // Map and store wanted values.
+          // biome-ignore lint/style/noNonNullAssertion: this is created prior.
           seriesDictionary[tconst]!.b = basics;
           return;
         }
@@ -220,18 +243,26 @@ interface ImdbDatasetConfig<T extends keyof typeof ImdbData> {
 
       for (let i = 0; i < episodes.length; i++) {
         const episodeTconst = series.e[i];
+        // biome-ignore lint/style/noNonNullAssertion: this is created prior.
         const rating = ratingDictionary[episodeTconst]!;
+        // biome-ignore lint/style/noNonNullAssertion: this is created prior.
         const episode = episodeDictionary[episodeTconst]!;
 
         const { [TvData.averageRating]: averageRating, [TvData.numVotes]: numVotes } = rating;
-        const { [TvData.primaryTitle]: primaryTitle, [ImdbData.ImdbTitleEpisode.seasonNumber]: seasonNumber, [ImdbData.ImdbTitleEpisode.episodeNumber]: episodeNumber } = episode;
+        const {
+          [TvData.primaryTitle]: primaryTitle,
+          [ImdbData.ImdbTitleEpisode.seasonNumber]: seasonNumber,
+          [ImdbData.ImdbTitleEpisode.episodeNumber]: episodeNumber,
+        } = episode;
 
         // Add indexes.
         seasonIndexSet.add(seasonNumber);
         episodeIndexSet.add(episodeNumber);
 
         // Create the season object path if it does not exist.
-        !tvSeriesMap[seasonNumber] && (tvSeriesMap[seasonNumber] = {});
+        if (!tvSeriesMap[seasonNumber]) {
+          tvSeriesMap[seasonNumber] = {};
+        }
 
         // Create episode path in map.
         tvSeriesMap[seasonNumber][episodeNumber] = {

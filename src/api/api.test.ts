@@ -19,7 +19,9 @@ describe('api utility', async () => {
     const request = Api.get().imdb().tv().details({ id: 'tt0386676' });
     const response = await request.fetch();
 
-    expect(request.url).toBe('https://raw.githubusercontent.com/fatherbrennan/api/refs/heads/get/imdb/tv/tt0386676.json');
+    expect(request.url).toBe(
+      'https://raw.githubusercontent.com/fatherbrennan/api/refs/heads/get/imdb/tv/tt0386676.json',
+    );
     expect(response.data).toBeObject();
     expect(response.hasException).toBeFalse();
     expect(response.isAborted).toBeFalse();

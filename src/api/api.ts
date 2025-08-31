@@ -1,4 +1,4 @@
-import { apiImdbGet } from '../imdb';
+import { apiImdbGet } from '../endpoint/imdb';
 import { Branch } from './constants';
 import { UrlBuilder } from './url';
 
@@ -53,7 +53,10 @@ export class ApiRequest {
       this.responseType = baseRequest.responseType;
     }
 
-    request.baseUrl && (this.baseUrl += request.baseUrl);
+    if (request.baseUrl) {
+      this.baseUrl += request.baseUrl;
+    }
+
     this.params = { ...this.params, ...request.params };
     this.requestInit = { ...this.requestInit, ...request.requestInit };
     this.responseType = request.responseType ?? this.responseType;
@@ -88,8 +91,12 @@ export class Api {
       response.isSuccess = false;
       response.hasException = true;
       response.exception = error;
+
       // Expected error from aborting
-      error instanceof Error && error.name === 'AbortError' && (response.isAborted = true);
+      if (error instanceof Error && error.name === 'AbortError') {
+        response.isAborted = true;
+      }
+
       return response;
     }
   }
@@ -110,7 +117,7 @@ export class Api {
        * Send request and return response.
        */
       fetch: async () => {
-        return this.fetch<TDefaultResponse, TResponse>(url, request);
+        return Api.fetch<TDefaultResponse, TResponse>(url, request);
       },
     };
   }
@@ -125,7 +132,10 @@ export class Api {
    * ```
    */
   public static get<TResponse = undefined>() {
-    const request = new ApiRequest({ baseUrl: `https://raw.githubusercontent.com/fatherbrennan/api/refs/heads/${Branch.Default}`, requestInit: { method: 'GET' } });
+    const request = new ApiRequest({
+      baseUrl: `https://raw.githubusercontent.com/fatherbrennan/api/refs/heads/${Branch.Default}`,
+      requestInit: { method: 'GET' },
+    });
 
     return {
       ...apiImdbGet<TResponse>(request),

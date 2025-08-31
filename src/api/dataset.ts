@@ -12,7 +12,12 @@ export type DatasetConfig = Record<string, DatasetFieldConfig>;
 export type InferDataset<T extends DatasetConfig> = {
   [K in keyof T]: T[K]['key'];
 } & {
-  $type: { [K in keyof T as T[K]['key']]: SetNullable<GetTypeFromString<T[K]['_type'] extends any[] ? T[K]['_type'][number] : T[K]['_type']>, T[K]['_required']> };
+  $type: {
+    [K in keyof T as T[K]['key']]: SetNullable<
+      GetTypeFromString<T[K]['_type'] extends unknown[] ? T[K]['_type'][number] : T[K]['_type']>,
+      T[K]['_required']
+    >;
+  };
 };
 
 /**
@@ -20,10 +25,10 @@ export type InferDataset<T extends DatasetConfig> = {
  * @returns Simple object with strong typing attached to `dataset.$type`.
  */
 export const createDataset = <T extends DatasetConfig>(dataset: T): InferDataset<T> => {
-  const data: any = {};
+  const data: Record<string, unknown> = {};
   for (const key in dataset) {
     data[key] = dataset[key].key;
     delete dataset[key];
   }
-  return data;
+  return data as unknown as InferDataset<T>;
 };

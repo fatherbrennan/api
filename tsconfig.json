@@ -16,6 +16,5 @@
     "noEmit": true,
     "tsBuildInfoFile": ".tsbuildinfo"
   },
-  "files": [],
   "include": ["./**/*.ts", "./**/*.tsx", "./*.d.ts", "./*.config.ts"]
 }
