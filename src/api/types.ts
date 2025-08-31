@@ -27,6 +27,11 @@ export type RequiredNonNullable<T> = { [K in keyof T]: NonNullable<T[K]> };
 export type SetNullable<T, R extends boolean> = R extends true ? T : Nullable<T>;
 
 /**
+ * Used to add stronger typing which can be used to infer the type of a variable.
+ */
+export type Type$<T> = { $type: T };
+
+/**
  * Get the type from provided `Type` value.
  */
 export type GetTypeFromString<T> = T extends typeof Type.Bit

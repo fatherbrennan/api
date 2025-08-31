@@ -1,66 +1,68 @@
-import { file, write } from 'bun';
+import { file as bunFile, write as bunWrite } from 'bun';
 import { rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 import type { FileSink } from 'bun';
 
-export class FileSystem {
-  public static dir = 'tmp' as const;
-  public static dirPath = resolve(__dirname, '..', '..', this.dir);
+import type { Type$ } from './types';
 
-  public static directory<TDirName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>>(
-    name: TDirName,
-    baseDirectory?: TFileSystemDirectory,
-  ) {
-    return new FileSystemDirectory(name, baseDirectory);
-  }
+export type Directory<TName extends string> = {
+  name: TName;
+  dirPath: string;
+  clear: () => Promise<void>;
+};
 
-  public static file<TFileName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>>(
-    name: TFileName,
-    baseDirectory: TFileSystemDirectory,
-  ) {
-    return new FileSystemFile(name, baseDirectory);
-  }
-}
+export type File<TFileName extends string, TDirectory> = {
+  name: TFileName;
+  dir: TDirectory;
+  filePath: string;
+  fileSink: FileSink | null;
+  touch: () => Promise<void>;
+  writer: () => FileSink;
+};
 
-export class FileSystemDirectory<
-  TDirName extends string,
-  TFileSystemDirectory extends FileSystemDirectory<string, TFileSystemDirectory>,
-> {
-  public dir: TDirName;
-  public dirPath: string;
+export const tempDir = 'tmp' as const;
+export const tempDirPath = resolve(__dirname, '..', '..', tempDir);
 
-  public async clear() {
-    await rm(this.dirPath, { force: true, recursive: true });
-  }
+export const directory = <TDirName extends string, TDirectory extends Directory<string> | undefined>(
+  name: TDirName,
+  baseDirectory?: TDirectory,
+) => {
+  const dirPath = join(baseDirectory ? baseDirectory.dirPath : tempDirPath, name);
 
-  constructor(name: TDirName, baseDirectory?: TFileSystemDirectory) {
-    this.dir = name;
-    this.dirPath = join(baseDirectory ? baseDirectory.dirPath : FileSystem.dirPath, this.dir);
-  }
-}
+  return {
+    name,
+    dirPath,
+    clear: async () => {
+      await rm(dirPath, { force: true, recursive: true });
+    },
+  } as undefined extends TDirectory
+    ? Directory<TDirName> & Type$<{ rootDir: typeof tempDir }>
+    : Directory<TDirName> & Type$<{ rootDir: TDirectory }>;
+};
 
-export class FileSystemFile<TFileName extends string, TFileSystemDirectory extends FileSystemDirectory<string, any>> {
-  public dir: TFileSystemDirectory;
-  public file: TFileName;
-  public filePath: string;
-  public fileSink: FileSink | null = null;
+export const file = <TFileName extends string, TDirectory extends Directory<string>>(
+  name: TFileName,
+  baseDirectory: TDirectory,
+): File<TFileName, TDirectory> => {
+  const dir = baseDirectory;
+  let fileSink: FileSink | null = null;
+  const filePath = join(dir.dirPath, name);
 
-  public async touch() {
-    // Hacky way to create a new empty file and path if needed (not sure why cannot write an empty string)
-    await write(this.filePath, ' ', { createPath: true });
-  }
-
-  public writer() {
-    if (!this.fileSink) {
-      this.fileSink = file(this.filePath).writer();
-    }
-    return this.fileSink;
-  }
-
-  constructor(name: TFileName, baseDirectory: TFileSystemDirectory) {
-    this.file = name;
-    this.dir = baseDirectory;
-    this.filePath = join(this.dir.dirPath, this.file);
-  }
-}
+  return {
+    name,
+    dir,
+    fileSink,
+    filePath,
+    touch: async () => {
+      // Hacky way to create a new empty file and path if needed (not sure why cannot write an empty string)
+      await bunWrite(filePath, ' ', { createPath: true });
+    },
+    writer: () => {
+      if (!fileSink) {
+        fileSink = bunFile(filePath).writer();
+      }
+      return fileSink;
+    },
+  };
+};

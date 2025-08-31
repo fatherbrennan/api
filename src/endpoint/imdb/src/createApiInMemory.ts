@@ -1,7 +1,7 @@
 import { gunzipSync, write } from 'bun';
 import { parse } from 'papaparse';
 
-import { FileSystem } from '../../../api/file-system';
+import { directory, file } from '../../../api/file-system';
 import { ImdbData, imdbDirName, imdbTvDirName, imdbTvSearchFileName, TitleType, TvData } from '../constants';
 import { sortAsc } from './utils';
 
@@ -63,9 +63,9 @@ interface ImdbDatasetConfig<T extends keyof typeof ImdbData> {
 }
 
 (async () => {
-  const imdbDir = FileSystem.directory(imdbDirName);
-  const imdbTvDir = FileSystem.directory(imdbTvDirName, imdbDir);
-  const imdbTvSearchFile = FileSystem.file(imdbTvSearchFileName, imdbTvDir);
+  const imdbDir = directory(imdbDirName);
+  const imdbTvDir = directory(imdbTvDirName, imdbDir);
+  const imdbTvSearchFile = file(imdbTvSearchFileName, imdbTvDir);
   const ratingDictionary: RatingDictionary = {};
   const seriesDictionary: SeriesDictionary = {};
   const episodeDictionary: EpisodeDictionary = {};
