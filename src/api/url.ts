@@ -7,7 +7,6 @@ export type UrlQueryParams = Record<string, UrlQueryParamsValue>;
  * @param value Value to encode.
  * @returns Encoded string.
  */
-// public static encodeSubstring(value: Exclude<UrlQueryParamsValue, undefined>): string {
 export const encodeSubstring = (value: NonNullable<UrlQueryParamsValue>): string => {
   return encodeURIComponent(value);
 };
