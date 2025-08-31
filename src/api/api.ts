@@ -1,12 +1,12 @@
 import { apiImdbGet } from '../endpoint/imdb';
 import { Branch } from './constants';
-import { UrlBuilder } from './url';
+import { query } from './url';
 
-import type { UrlBuilderQueryParams } from './url';
+import type { UrlQueryParams } from './url';
 
 export interface ApiRequestProps {
   baseUrl: string;
-  params: UrlBuilderQueryParams;
+  params: UrlQueryParams;
   /** @default 'json' */
   responseType: keyof Pick<Response, 'arrayBuffer' | 'blob' | 'json' | 'text'>;
   requestInit: RequestInit;
@@ -102,7 +102,7 @@ export class Api {
   }
 
   public static prepareRequest<TDefaultResponse, TResponse = undefined>(request: ApiRequest) {
-    const url = `${request.baseUrl}${UrlBuilder.query(request.params)}`;
+    const url = `${request.baseUrl}${query(request.params)}`;
 
     return {
       /**

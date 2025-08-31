@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
-import { UrlBuilder } from './url';
+import { query } from './url';
 
 describe('url utility', async () => {
   test('query', async () => {
@@ -13,7 +13,7 @@ describe('url utility', async () => {
       q: 'Hello World!',
     };
 
-    expect(UrlBuilder.query(query1)).toBe('');
-    expect(UrlBuilder.query(query2)).toBe('?page=1&limit=10&sort=asc&custom_param=%26wow&q=Hello%20World!');
+    expect(query(query1)).toBe('');
+    expect(query(query2)).toBe('?page=1&limit=10&sort=asc&custom_param=%26wow&q=Hello%20World!');
   });
 });

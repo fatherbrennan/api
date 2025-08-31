@@ -3,7 +3,7 @@ import type { ImdbEpisode, ImdbMap, ImdbMapIndexUtil } from '../endpoint/imdb/ty
 import type { Type } from './constants';
 
 export type { ApiRequestProps } from './api';
-export type { UrlBuilderQueryParams, UrlBuilderQueryParamsValue } from './url';
+export type { UrlQueryParams, UrlQueryParamsValue } from './url';
 
 /**
  * Make `T` nullable.

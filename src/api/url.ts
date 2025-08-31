@@ -1,41 +1,39 @@
-export type UrlBuilderQueryParamsValue = string | number | boolean | undefined;
+export type UrlQueryParamsValue = string | number | boolean | undefined;
 
-export type UrlBuilderQueryParams = Record<string, UrlBuilderQueryParamsValue>;
+export type UrlQueryParams = Record<string, UrlQueryParamsValue>;
 
-export class UrlBuilder {
-  /**
-   * URL encode value.
-   * @param value Value to encode.
-   * @returns Encoded string.
-   */
-  // public static encodeSubstring(value: Exclude<UrlBuilderQueryParamsValue, undefined>): string {
-  public static encodeSubstring(value: NonNullable<UrlBuilderQueryParamsValue>): string {
-    return encodeURIComponent(value);
+/**
+ * URL encode value.
+ * @param value Value to encode.
+ * @returns Encoded string.
+ */
+// public static encodeSubstring(value: Exclude<UrlQueryParamsValue, undefined>): string {
+export const encodeSubstring = (value: NonNullable<UrlQueryParamsValue>): string => {
+  return encodeURIComponent(value);
+};
+
+/**
+ * Generate a URL query string from an object where the key is the query parameter and the value is the query value.
+ * @param params Query object.
+ * @returns URL query string.
+ */
+export const query = (params: UrlQueryParams) => {
+  const keys = Object.keys(params);
+
+  if (keys.length === 0) {
+    return '';
   }
 
-  /**
-   * Generate a URL query string from an object where the key is the query parameter and the value is the query value.
-   * @param params Query object.
-   * @returns URL query string.
-   */
-  public static query(params: UrlBuilderQueryParams) {
-    const keys = Object.keys(params);
+  let q = '?';
 
-    if (keys.length === 0) {
-      return '';
+  for (let i = 0; i < keys.length; i++) {
+    const key: keyof UrlQueryParams = keys[i];
+    const value = params[key];
+
+    if (value !== undefined) {
+      q += `${key}=${encodeSubstring(value)}&`;
     }
-
-    let q = '?';
-
-    for (let i = 0; i < keys.length; i++) {
-      const key: keyof UrlBuilderQueryParams = keys[i];
-      const value = params[key];
-
-      if (value !== undefined) {
-        q += `${key}=${UrlBuilder.encodeSubstring(value)}&`;
-      }
-    }
-
-    return q.slice(0, -1);
   }
-}
+
+  return q.slice(0, -1);
+};
