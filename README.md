@@ -45,7 +45,7 @@ if (isSuccess && data !== null) {
   - `.github/workflows` GitHub Actions workflows.
   - `.vscode/` Visual Studio Code workspace settings and configuration files.
   - `src/` Source files.
-    - `api/` Shared TypeScript, Bun and Node code.
+    - `api/` Shared TypeScript and Bun files.
       - `common/` Files to be included in NPM package.
     - `endpoint/`
       - `*/` Source files for each individual API endpoint. E.g. `imdb`.
