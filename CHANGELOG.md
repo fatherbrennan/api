@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrate from [ESLint](https://www.npmjs.com/package/eslint) to [Biome](https://www.npmjs.com/package/@biomejs/biome).
 - Migrate from [Prettier](https://www.npmjs.com/package/prettier) to [Biome](https://www.npmjs.com/package/@biomejs/biome).
+- Some existing utility types have been updated.
 
 ### Deprecated
 

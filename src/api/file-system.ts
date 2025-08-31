@@ -6,13 +6,13 @@ import type { FileSink } from 'bun';
 
 import type { Type$ } from './types';
 
-export type Directory<TName extends string> = {
+export type FsDirectory<TName extends string> = {
   name: TName;
   dirPath: string;
   clear: () => Promise<void>;
 };
 
-export type File<TFileName extends string, TDirectory> = {
+export type FsFile<TFileName extends string, TDirectory> = {
   name: TFileName;
   dir: TDirectory;
   filePath: string;
@@ -24,7 +24,7 @@ export type File<TFileName extends string, TDirectory> = {
 export const tempDir = 'tmp' as const;
 export const tempDirPath = resolve(__dirname, '..', '..', tempDir);
 
-export const directory = <TDirName extends string, TDirectory extends Directory<string> | undefined>(
+export const directory = <TDirName extends string, TDirectory extends FsDirectory<string> | undefined>(
   name: TDirName,
   baseDirectory?: TDirectory,
 ) => {
@@ -37,14 +37,14 @@ export const directory = <TDirName extends string, TDirectory extends Directory<
       await rm(dirPath, { force: true, recursive: true });
     },
   } as undefined extends TDirectory
-    ? Directory<TDirName> & Type$<{ rootDir: typeof tempDir }>
-    : Directory<TDirName> & Type$<{ rootDir: TDirectory }>;
+    ? FsDirectory<TDirName> & Type$<{ rootDir: typeof tempDir }>
+    : FsDirectory<TDirName> & Type$<{ rootDir: TDirectory }>;
 };
 
-export const file = <TFileName extends string, TDirectory extends Directory<string>>(
+export const file = <TFileName extends string, TDirectory extends FsDirectory<string>>(
   name: TFileName,
   baseDirectory: TDirectory,
-): File<TFileName, TDirectory> => {
+): FsFile<TFileName, TDirectory> => {
   const dir = baseDirectory;
   let fileSink: FileSink | null = null;
   const filePath = join(dir.dirPath, name);
